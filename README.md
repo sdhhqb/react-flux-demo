@@ -4,6 +4,7 @@ react flux demo, a demonstration of build CMS with react.
 ## 运行
 你必须在电脑上把 [npm](https://www.npmjs.org/) 安装好。
 在项目根目录下运行下面这条命令：
+
 		npm install
 
 这条命令会安装依赖的模块。
