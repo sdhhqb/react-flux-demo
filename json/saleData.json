@@ -1,0 +1,24 @@
+{
+	"keyOrder": [
+		"id",
+		"num",
+		"name"
+	],
+	"headData": {
+		"id": "统计编号",
+		"num": "销量",
+		"name": "产品名称"
+	},
+	"itemData": [
+		{
+			"id": "tj0001",
+			"name": "产品1",
+			"num": 1599
+		},
+		{
+			"id": "tj0002",
+			"name": "产品2",
+			"num": 2378
+		}
+	]
+}
