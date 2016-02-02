@@ -15,17 +15,14 @@
     "browserify": "^6.2.0",
     "envify": "^3.0.0",
     "eslint": "^1.10.3",
-    "eslint-config-google": "^0.3.0",
     "eslint-plugin-react": "^3.16.1",
     "reactify": "^0.15.2",
     "uglify-js": "~2.4.15",
     "watchify": "^2.1.1"
   },
   "scripts": {
-    "start": "watchify -o js/bundle.js -v -d js/app.js",
     "develop": "browserify . -t [envify --NODE_ENV production] > js/bundle.js",
-    "build": "browserify . -t [envify --NODE_ENV production] | uglifyjs -cm > js/bundle.js",
-    "test": "node --version"
+    "build": "browserify . -t [envify --NODE_ENV production] | uglifyjs -cm > js/bundle.js"
   },
   "browserify": {
     "transform": [
