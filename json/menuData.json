@@ -37,14 +37,27 @@
 		"route": "test1lv1",
 		"child": [
 			{
-				"name": "菜单测试一2级",
+				"name": "菜单测试一2级1",
 				"level": 2,
-				"route": "test1lv2",
+				"route": "test1lv201",
 				"child": [
 					{
 						"name": "菜单测试一3级",
 						"level": 3,
-						"route": "test1lv3",
+						"route": "test1lv301",
+						"child": false
+					}
+				]
+			},
+			{
+				"name": "菜单测试一2级2",
+				"level": 2,
+				"route": "test1lv202",
+				"child": [
+					{
+						"name": "菜单测试一3级",
+						"level": 3,
+						"route": "test1lv302",
 						"child": false
 					}
 				]

@@ -1,33 +1,45 @@
 // menuItem 菜单条目组件
 var React = require('react');
 
+var MenuActionCreater = require('../../actions/MenuActionCreater');
+
 var MenuItem = React.createClass({
 	componentDidMount: function () {
 		var curActive = this.props.curActive;
-		var curKey = this.props.curKey;
-		if (curActive == this.props.item.route) {
-			if (curKey == "") {
-				var _this = this;
-				_this.chgKey();
-			}
+		var curPath = this.props.curPath;
+		var hash = window.location.hash.substring(1);
+		if (hash == this.props.item.route && curActive == "") {
+			// 打开hash对应的项目
+			// MenuActionCreater.clickMenuItem(this.props.selfPath, this.props.item.route);
+			var _this = this;
+			setTimeout(function () {
+				MenuActionCreater.clickMenuItem(_this.props.selfPath, _this.props.item.route);
+			}, 200);
 		}
+		// if (curActive == this.props.item.route) {
+		// 	if (curPath == "") {
+		// 		var _this = this;
+		// 		_this.chgKey();
+		// 	}
+		// }
 	},
 	showRoute: function () {
 		var route = this.props.item.route;
 		location.hash = route;
-		this.chgKey();		
+		this.chgKey();
 	},
 	chgKey: function () {
-		if (this.props.curKey != this.props.keyVal) {
-			this.props.chgKey(this.props.keyVal);
+		if (this.props.curPath != this.props.selfPath) {
+			// MenuActionCreater.clickMenuItem(this.props.selfPath, this.props.curActive);
+			MenuActionCreater.clickMenuItem(this.props.selfPath, this.props.item.route);
 		}
 	},
 	render: function () {
 		var className = "menuItem";
-		var curKey = this.props.curKey;
+		var curKey = this.props.curPath;
 		
 		if (curKey) {
-			if (curKey == this.props.keyVal) {
+			if (curKey == this.props.selfPath) {
 				className += " active";
 			}
 		}

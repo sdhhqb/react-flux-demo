@@ -3,76 +3,37 @@
 var React = require('react');
 var MenuHierarchy = require('./MenuHierarchy.react');
 
+var MenuActionCreater = require('../../actions/MenuActionCreater');
+
 var SideMenu = React.createClass({
-	getInitialState: function () {
-		return {
-			curActive: this.props.curActive,
-			curKey: "",
-			menuData: []
-		};
-	},
-	initCurKey: function (menuData, curActive, startLevel, startStr) {
-		var key = startStr || "";
-		var level = startLevel || 1;
-		var i, childKey;
-		for (i = 0; i < menuData.length; i++) {
-			if (menuData[i].child) {
-				childKey = this.initCurKey(menuData[i].child, curActive, level+1, key);
-				if (key != childKey) {
-					key = 'level'+level+'-'+i+childKey;
-					break;
-				}
-			} else {
-				if (menuData[i].route == curActive) {
-					key = key+'level'+level+'-'+i;
-					return key;
-				}
-			}
-		}
-		return key;
-	},
-	chgCurKey: function (curActiveKey) {
-		this.setState({
-			curKey: curActiveKey
-		});
+	// 改变当前展开路径
+	chgCurPath: function (curPath) {
+		MenuActionCreater.clickMenu(curPath);
 	},
 	componentWillReceiveProps: function (nextProps) {
-		var curKey = this.initCurKey(this.state.menuData, nextProps.curActive);
-		this.setState({
-			curKey: curKey
-		});
 	},
 	componentDidMount: function () {
-		var _this = this;
-		$.ajax({
-			"url":"json/menuData.json",
-			"type": "get",
-			"dataType": "json",
-			"success": function (data) {
-				_this.setState({
-					menuData: data
-				});
-			},
-			"error": function () {
-				console.log("get menuData error.");
-			}
-		});
 	},
 	render: function () {
-		var menuData = this.state.menuData;
+		var menuData = this.props.menuData;
+		var curPath = this.props.curPath;
+		var curActive = this.props.curActive;
+
 		var key, list = [];
-		// console.log("sideMenu render");
+
+		console.log("sideMenu render, menuData: ", menuData)
+		console.log("curPath: "+curPath, "curActive: "+curActive);
 
 		for (var i = 0; i < menuData.length; i++) {
 			key = "level" + menuData[i].level + "-" + i;
 			list.push(
 				<MenuHierarchy 
 					key={key}
-					keyVal={key}
 					keyFlag={i}
-					chgKey={this.chgCurKey}
-					curKey={this.state.curKey}
-					curActive={this.state.curActive}
+					chgKey={this.chgCurPath}
+					selfPath={key}
+					curPath={this.props.curPath}
+					curActive={this.props.curActive}
 					item={menuData[i]} />);
 		}
 		

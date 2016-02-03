@@ -33,6 +33,7 @@ body {font-size: 14px;}
 }
 .subMenu {
 	line-height: 40px;
+	padding-left: 10px;
 	background-color: #a9a9a9;
 	overflow: hidden;
 }
@@ -57,6 +58,9 @@ body {font-size: 14px;}
 	color: #f1f1f1;
 	background-color: #474747;
 	border-bottom: solid 1px #333;
+}
+.level-2 > .subMenu {
+	padding-left: 20px;
 }
 .menuItem {
 	height: 0;

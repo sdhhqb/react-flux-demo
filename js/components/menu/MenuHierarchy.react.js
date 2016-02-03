@@ -2,41 +2,39 @@
 var React = require('react');
 var MenuItem = require('./MenuItem.react');
 
-var MenuHierarchy = React.createClass({	
-	getInitialState: function () {
-		return {
-			curActive: this.props.curActive,
-			active: false
-		};
+var MenuActionCreater = require('../../actions/MenuActionCreater');
+
+var MenuHierarchy = React.createClass({
+	// 改变当前菜单展开路径
+	chgCurPath: function (curPath) {
+		MenuActionCreater.clickMenu(curPath);
 	},
+	// 计算各级菜单展开收起状态
 	toggle: function () {
 		var parentLevel;
-		// var tmp1 = this.props.curKey;
-		// var tmp2 = this.props.keyVal;
-		// console.log("tmp1: "+tmp1, "tmp2: "+tmp2);
-		if (this.props.curKey == "") {
+		if (this.props.curPath == "") {
 			// 当前展开索引为空，展开菜单
-			this.props.chgKey(this.props.keyVal);
+			this.chgCurPath(this.props.selfPath);
 		} else {
 			// 如果索引不为为空，先判断点击项目有没有父级索引
-			parentLevel = this.props.keyVal.split("level"+this.props.item.level)[0];
+			parentLevel = this.props.selfPath.split("level"+this.props.item.level)[0];
 			if (parentLevel) {
 				// 有父级项目，判断点击的是否是已展开项目
-				if (this.props.curKey.indexOf(this.props.keyVal) > -1) {
+				if (this.props.curPath.indexOf(this.props.selfPath) > -1) {
 					// 已展开，收起到父一级
-					this.props.chgKey(parentLevel);
+					this.chgCurPath(parentLevel);
 				} else {
 					// 展开所点击的项目
-					this.props.chgKey(this.props.keyVal);
+					this.chgCurPath(this.props.selfPath);
 				}
 			} else {
 				// 没有父级索引，点击的是第一级菜单
-				if (this.props.curKey.indexOf(this.props.keyVal) > -1) {
+				if (this.props.curPath.indexOf(this.props.selfPath) > -1) {
 					// 点击当前分支的第一级菜单，收起菜单
-					this.props.chgKey("");
+					this.chgCurPath("");
 				} else {
 					// 点击其他条目，展开
-					this.props.chgKey(this.props.keyVal);
+					this.chgCurPath(this.props.selfPath);
 				}
 			}
 		}
@@ -45,27 +43,25 @@ var MenuHierarchy = React.createClass({
 		var item = this.props.item;
 		var child = item.child;
 		var i, key, curKey, className, list = [];
-
-		// console.log("hierarchy render..." + this.props.keyVal);
 		
 		if (item.child) {
 			for (i = 0; i < child.length; i++) {
-				key = this.props.keyVal + "level" + item.child[i].level + "-" + i;
+				key = this.props.selfPath + "level" + item.child[i].level + "-" + i;
 				list.push(
 					<MenuHierarchy 
 						key={key}
-						keyVal={key}
 						keyFlag={i}
-						chgKey={this.props.chgKey}
-						curKey={this.props.curKey}
+						chgKey={this.chgCurPath}
+						selfPath={key}
+						curPath={this.props.curPath}
 						curActive={this.props.curActive}
 						item={item.child[i]} />
 				);
 			}
 
 			className = "";
-			curKey = this.props.curKey;
-			if (curKey.indexOf(this.props.keyVal) > -1) {
+			curKey = this.props.curPath;
+			if (curKey.indexOf(this.props.selfPath) > -1) {
 				className = "active";
 			}
 
@@ -78,14 +74,14 @@ var MenuHierarchy = React.createClass({
 				</li>
 			);
 		} else {
-			key = this.props.keyVal;
+			key = this.props.selfPath;
 			return (
 				<MenuItem 
 					key={key}
-					keyVal={key}
 					keyFlag={0}
 					chgKey={this.props.chgKey}
-					curKey={this.props.curKey}
+					selfPath={key}
+					curPath={this.props.curPath}
 					curActive={this.props.curActive}
 					item={item} />
 			);
