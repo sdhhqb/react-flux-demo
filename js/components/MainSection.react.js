@@ -27,6 +27,7 @@ var MainSection = React.createClass({
 		if (hash) {
 			//展开hash对应的菜单项
 		}
+		// hashChangeEvent
 	},
 	componentWillUnmount: function() {
     MenuStore.removeChangeListener(this._onChange);
