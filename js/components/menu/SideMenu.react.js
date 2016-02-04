@@ -6,13 +6,8 @@ var MenuHierarchy = require('./MenuHierarchy.react');
 var MenuActionCreater = require('../../actions/MenuActionCreater');
 
 var SideMenu = React.createClass({
-	// 改变当前展开路径
-	chgCurPath: function (curPath) {
-		MenuActionCreater.clickMenu(curPath);
-	},
-	componentWillReceiveProps: function (nextProps) {
-	},
 	componentDidMount: function () {
+		console.log("side menu did mount");
 	},
 	render: function () {
 		var menuData = this.props.menuData;
@@ -30,7 +25,6 @@ var SideMenu = React.createClass({
 				<MenuHierarchy 
 					key={key}
 					keyFlag={i}
-					chgKey={this.chgCurPath}
 					selfPath={key}
 					curPath={this.props.curPath}
 					curActive={this.props.curActive}

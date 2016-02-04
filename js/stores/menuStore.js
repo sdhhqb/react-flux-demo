@@ -42,7 +42,7 @@ var MenuStore = assign({}, EventEmitter.prototype, {
 });
 
 MenuStore.dispatchToken = AppDispatcher.register(function(action) {
-  console.log("store callback, action type: " + action.type);
+  console.log("menuStore dispatcher callback, action type: " + action.type);
 
   switch(action.type) {
   	
@@ -52,13 +52,13 @@ MenuStore.dispatchToken = AppDispatcher.register(function(action) {
       MenuStore.emitChange();
   		break;
 
-    case ActionTypes.CLICK_MENU:
+    case ActionTypes.SET_MENU_PATH:
     	// 点击菜单，设置当前点击路径
     	setCurPath(action.curPath);
       MenuStore.emitChange();
       break;
 
-    case ActionTypes.CLICK_MENU_ITEM:
+    case ActionTypes.SET_MENU_ITEM:
     	// 点击菜单内容项，设置当前点击路径和选中项
     	setCurPath(action.curPath);
       setCurActive(action.curActive);

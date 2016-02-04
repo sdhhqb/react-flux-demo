@@ -12,9 +12,9 @@ var MenuItem = React.createClass({
 			// 打开hash对应的项目
 			// MenuActionCreater.clickMenuItem(this.props.selfPath, this.props.item.route);
 			var _this = this;
-			setTimeout(function () {
-				MenuActionCreater.clickMenuItem(_this.props.selfPath, _this.props.item.route);
-			}, 200);
+			// setTimeout(function () {
+			// 	MenuActionCreater.clickMenuItem(_this.props.selfPath, _this.props.item.route);
+			// }, 200);
 		}
 		// if (curActive == this.props.item.route) {
 		// 	if (curPath == "") {
@@ -26,7 +26,7 @@ var MenuItem = React.createClass({
 	showRoute: function () {
 		var route = this.props.item.route;
 		location.hash = route;
-		this.chgKey();
+		// this.chgKey();
 	},
 	chgKey: function () {
 		if (this.props.curPath != this.props.selfPath) {

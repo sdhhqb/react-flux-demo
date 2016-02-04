@@ -11,17 +11,17 @@ module.exports = {
       menuData: menuData
     });
 	},
-	// 点击菜单
-	clickMenu: function (curPath) {
+	// 设置菜单路径
+	setMenuPath: function (curPath) {
 		AppDispatcher.dispatch({
-      type: ActionTypes.CLICK_MENU,
+      type: ActionTypes.SET_MENU_PATH,
       curPath: curPath
     });
 	},
-	// 点击菜单内容项目
-	clickMenuItem: function (curPath, curActive) {
+	// 设置菜单当前内容项目
+	setMenuItem: function (curPath, curActive) {
 		AppDispatcher.dispatch({
-      type: ActionTypes.CLICK_MENU_ITEM,
+      type: ActionTypes.SET_MENU_ITEM,
       curPath: curPath,
       curActive: curActive
     });

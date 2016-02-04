@@ -7,7 +7,7 @@ var MenuActionCreater = require('../../actions/MenuActionCreater');
 var MenuHierarchy = React.createClass({
 	// 改变当前菜单展开路径
 	chgCurPath: function (curPath) {
-		MenuActionCreater.clickMenu(curPath);
+		MenuActionCreater.setMenuPath(curPath);
 	},
 	// 计算各级菜单展开收起状态
 	toggle: function () {
@@ -51,7 +51,6 @@ var MenuHierarchy = React.createClass({
 					<MenuHierarchy 
 						key={key}
 						keyFlag={i}
-						chgKey={this.chgCurPath}
 						selfPath={key}
 						curPath={this.props.curPath}
 						curActive={this.props.curActive}

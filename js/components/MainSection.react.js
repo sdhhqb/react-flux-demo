@@ -21,51 +21,61 @@ var MainSection = React.createClass({
 		return hash;
 	},	
 	componentDidMount: function () {
+		var _this = this;
+		// menuStore事件监听
 		MenuStore.addChangeListener(this._onChange);
-		MainApis.getMenuData();
-		var hash = this.getHash();
-		if (hash) {
-			//展开hash对应的菜单项
-		}
-		// hashChangeEvent
-		// test a new user 123
+
+		// 监听hash改变事件
+		window.addEventListener('hashchange', function () {
+			var hash = window.location.hash.substring(1);
+			var path = _this.getPath(_this.state.menuData, hash);
+			if (path != '') {
+				MenuActionCreater.setMenuItem(path, hash);
+			}
+		});
+
+		// 获取菜单数据
+		MainApis.getMenuData(function (menuData) {			
+			MenuActionCreater.receiveMenuData(menuData);
+			//第一次进入页面时带有hash
+			var hash = window.location.hash.substring(1);
+			if (hash) {
+				var path = _this.getPath(_this.state.menuData, hash);
+				if (path) {
+					MenuActionCreater.setMenuItem(path, hash);
+				}
+			}
+		});
 	},
 	componentWillUnmount: function() {
     MenuStore.removeChangeListener(this._onChange);
   },
 	render: function () {
-		// var Xcontent;
-		// switch (this.state.route) {
-		// case 'productlist': Xcontent = ContentProduct; break;
-		// case 'productsale': Xcontent = ContentProduct; break;
-		// case 'userlist': Xcontent = ContentUser; break;
-		// default:			Xcontent = ContentProduct;
-		// }
-
-		// return (
-		// 	<div id="mainSection" className="mainSection">
-		// 		<SideMenu curActive={this.state.curActive} />
-		// 		<Xcontent curRoute={this.state.route} />
-		// 	</div>
-		// );
-		console.log("|| ------ || ------");
-		console.log("MainSection render", this.state.menuData);
+		var Xcontent;
+		switch (this.state.curActive) {
+		case 'productlist': Xcontent = ContentProduct; break;
+		case 'productsale': Xcontent = ContentProduct; break;
+		case 'userlist': Xcontent = ContentUser; break;
+		default:			Xcontent = ContentProduct;
+		}
+		
 		return (
 			<div id="mainSection" className="mainSection">
 				<SideMenu 
 					curPath={this.state.curPath}
 					curActive={this.state.curActive}
 					menuData={this.state.menuData} />
+				<Xcontent curRoute={this.state.route} />
 			</div>
 		);
 	},
-	initCurKey: function (menuData, curActive, startLevel, startStr) {
+	getPath: function (menuData, curActive, startLevel, startStr) {
 		var key = startStr || "";
 		var level = startLevel || 1;
 		var i, childKey;
 		for (i = 0; i < menuData.length; i++) {
 			if (menuData[i].child) {
-				childKey = this.initCurKey(menuData[i].child, curActive, level+1, key);
+				childKey = this.getPath(menuData[i].child, curActive, level+1, key);
 				if (key != childKey) {
 					key = 'level'+level+'-'+i+childKey;
 					break;

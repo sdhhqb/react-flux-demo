@@ -12,17 +12,17 @@ module.exports = {
       menuData: menuData
     });
 	},
-	// 点击菜单
-	clickMenu: function (curPath) {
+	// 设置菜单路径
+	setMenuPath: function (curPath) {
 		AppDispatcher.dispatch({
-      type: ActionTypes.CLICK_MENU,
+      type: ActionTypes.SET_MENU_PATH,
       curPath: curPath
     });
 	},
-	// 点击菜单内容项目
-	clickMenuItem: function (curPath, curActive) {
+	// 设置菜单当前内容项目
+	setMenuItem: function (curPath, curActive) {
 		AppDispatcher.dispatch({
-      type: ActionTypes.CLICK_MENU_ITEM,
+      type: ActionTypes.SET_MENU_ITEM,
       curPath: curPath,
       curActive: curActive
     });
@@ -81,24 +81,43 @@ var MainSection = React.createClass({displayName: "MainSection",
 		return hash;
 	},	
 	componentDidMount: function () {
+		var _this = this;
+		// menuStore事件监听
 		MenuStore.addChangeListener(this._onChange);
-		MainApis.getMenuData();
-		var hash = this.getHash();
-		if (hash) {
-			//展开hash对应的菜单项
-		}
+
+		// 监听hash改变事件
+		window.addEventListener('hashchange', function () {
+			var hash = window.location.hash.substring(1);
+			var path = _this.getPath(_this.state.menuData, hash);
+			if (path != '') {
+				MenuActionCreater.setMenuItem(path, hash);
+			}
+		});
+
+		// 获取菜单数据
+		MainApis.getMenuData(function (menuData) {			
+			MenuActionCreater.receiveMenuData(menuData);
+			//第一次进入页面时带有hash
+			var hash = window.location.hash.substring(1);
+			if (hash) {
+				var path = _this.getPath(_this.state.menuData, hash);
+				if (path) {
+					MenuActionCreater.setMenuItem(path, hash);
+				}
+			}
+		});
 	},
 	componentWillUnmount: function() {
     MenuStore.removeChangeListener(this._onChange);
   },
 	render: function () {
-		// var Xcontent;
-		// switch (this.state.route) {
-		// case 'productlist': Xcontent = ContentProduct; break;
-		// case 'productsale': Xcontent = ContentProduct; break;
-		// case 'userlist': Xcontent = ContentUser; break;
-		// default:			Xcontent = ContentProduct;
-		// }
+		var Xcontent;
+		switch (this.state.curActive) {
+		case 'productlist': Xcontent = ContentProduct; break;
+		case 'productsale': Xcontent = ContentProduct; break;
+		case 'userlist': Xcontent = ContentUser; break;
+		default:			Xcontent = ContentProduct;
+		}
 
 		// return (
 		// 	<div id="mainSection" className="mainSection">
@@ -106,24 +125,23 @@ var MainSection = React.createClass({displayName: "MainSection",
 		// 		<Xcontent curRoute={this.state.route} />
 		// 	</div>
 		// );
-		console.log("|| ------ || ------");
-		console.log("MainSection render", this.state.menuData);
 		return (
 			React.createElement("div", {id: "mainSection", className: "mainSection"}, 
 				React.createElement(SideMenu, {
 					curPath: this.state.curPath, 
 					curActive: this.state.curActive, 
-					menuData: this.state.menuData})
+					menuData: this.state.menuData}), 
+				React.createElement(Xcontent, {curRoute: this.state.route})
 			)
 		);
 	},
-	initCurKey: function (menuData, curActive, startLevel, startStr) {
+	getPath: function (menuData, curActive, startLevel, startStr) {
 		var key = startStr || "";
 		var level = startLevel || 1;
 		var i, childKey;
 		for (i = 0; i < menuData.length; i++) {
 			if (menuData[i].child) {
-				childKey = this.initCurKey(menuData[i].child, curActive, level+1, key);
+				childKey = this.getPath(menuData[i].child, curActive, level+1, key);
 				if (key != childKey) {
 					key = 'level'+level+'-'+i+childKey;
 					break;
@@ -172,7 +190,7 @@ var MenuActionCreater = require('../../actions/MenuActionCreater');
 var MenuHierarchy = React.createClass({displayName: "MenuHierarchy",
 	// 改变当前菜单展开路径
 	chgCurPath: function (curPath) {
-		MenuActionCreater.clickMenu(curPath);
+		MenuActionCreater.setMenuPath(curPath);
 	},
 	// 计算各级菜单展开收起状态
 	toggle: function () {
@@ -216,7 +234,6 @@ var MenuHierarchy = React.createClass({displayName: "MenuHierarchy",
 					React.createElement(MenuHierarchy, {
 						key: key, 
 						keyFlag: i, 
-						chgKey: this.chgCurPath, 
 						selfPath: key, 
 						curPath: this.props.curPath, 
 						curActive: this.props.curActive, 
@@ -269,9 +286,9 @@ var MenuItem = React.createClass({displayName: "MenuItem",
 			// 打开hash对应的项目
 			// MenuActionCreater.clickMenuItem(this.props.selfPath, this.props.item.route);
 			var _this = this;
-			setTimeout(function () {
-				MenuActionCreater.clickMenuItem(_this.props.selfPath, _this.props.item.route);
-			}, 200);
+			// setTimeout(function () {
+			// 	MenuActionCreater.clickMenuItem(_this.props.selfPath, _this.props.item.route);
+			// }, 200);
 		}
 		// if (curActive == this.props.item.route) {
 		// 	if (curPath == "") {
@@ -283,7 +300,7 @@ var MenuItem = React.createClass({displayName: "MenuItem",
 	showRoute: function () {
 		var route = this.props.item.route;
 		location.hash = route;
-		this.chgKey();
+		// this.chgKey();
 	},
 	chgKey: function () {
 		if (this.props.curPath != this.props.selfPath) {
@@ -316,13 +333,8 @@ var MenuHierarchy = require('./MenuHierarchy.react');
 var MenuActionCreater = require('../../actions/MenuActionCreater');
 
 var SideMenu = React.createClass({displayName: "SideMenu",
-	// 改变当前展开路径
-	chgCurPath: function (curPath) {
-		MenuActionCreater.clickMenu(curPath);
-	},
-	componentWillReceiveProps: function (nextProps) {
-	},
 	componentDidMount: function () {
+		console.log("side menu did mount");
 	},
 	render: function () {
 		var menuData = this.props.menuData;
@@ -340,7 +352,6 @@ var SideMenu = React.createClass({displayName: "SideMenu",
 				React.createElement(MenuHierarchy, {
 					key: key, 
 					keyFlag: i, 
-					chgKey: this.chgCurPath, 
 					selfPath: key, 
 					curPath: this.props.curPath, 
 					curActive: this.props.curActive, 
@@ -601,8 +612,9 @@ var keyMirror = require('keymirror');
 module.exports = {
   ActionTypes: keyMirror({
   	RECEIVE_MENU_DATA: null,	//收到菜单数据
-    CLICK_MENU: null,		//点击菜单
-    CLICK_MENU_ITEM: null		//点击菜单内容项目
+  	SET_INITIAL_ACTIVE: null,	//第一次打开带有hash，设置初始化时的选中项
+    SET_MENU_PATH: null,		//点击菜单
+    SET_MENU_ITEM: null		//点击菜单内容项目
   })
 
 };
@@ -656,7 +668,7 @@ var MenuStore = assign({}, EventEmitter.prototype, {
 });
 
 MenuStore.dispatchToken = AppDispatcher.register(function(action) {
-  console.log("store callback, action type: " + action.type);
+  console.log("menuStore dispatcher callback, action type: " + action.type);
 
   switch(action.type) {
   	
@@ -666,13 +678,13 @@ MenuStore.dispatchToken = AppDispatcher.register(function(action) {
       MenuStore.emitChange();
   		break;
 
-    case ActionTypes.CLICK_MENU:
+    case ActionTypes.SET_MENU_PATH:
     	// 点击菜单，设置当前点击路径
     	setCurPath(action.curPath);
       MenuStore.emitChange();
       break;
 
-    case ActionTypes.CLICK_MENU_ITEM:
+    case ActionTypes.SET_MENU_ITEM:
     	// 点击菜单内容项，设置当前点击路径和选中项
     	setCurPath(action.curPath);
       setCurActive(action.curActive);
@@ -690,13 +702,13 @@ var MenuActionCreater = require('../actions/MenuActionCreater');
 // api接口
 module.exports = {
 	// 获取菜单数据
-	getMenuData: function () {
+	getMenuData: function (callback) {
 		$.ajax({
 			"url": "json/menuData.json",
 			"type": "get",
 			"dataType": "json",
 			"success": function (menuData) {
-				MenuActionCreater.receiveMenuData(menuData);
+				callback && callback(menuData);
 			},
 			"error": function (err) {
 				console.log("get menuData error");
