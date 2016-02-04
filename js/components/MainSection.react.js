@@ -58,14 +58,14 @@ var MainSection = React.createClass({
 		case 'userlist': Xcontent = ContentUser; break;
 		default:			Xcontent = ContentProduct;
 		}
-		
+
 		return (
 			<div id="mainSection" className="mainSection">
 				<SideMenu 
 					curPath={this.state.curPath}
 					curActive={this.state.curActive}
 					menuData={this.state.menuData} />
-				<Xcontent curRoute={this.state.route} />
+				<Xcontent curRoute={this.state.curActive} />
 			</div>
 		);
 	},

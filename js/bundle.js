@@ -119,19 +119,13 @@ var MainSection = React.createClass({displayName: "MainSection",
 		default:			Xcontent = ContentProduct;
 		}
 
-		// return (
-		// 	<div id="mainSection" className="mainSection">
-		// 		<SideMenu curActive={this.state.curActive} />
-		// 		<Xcontent curRoute={this.state.route} />
-		// 	</div>
-		// );
 		return (
 			React.createElement("div", {id: "mainSection", className: "mainSection"}, 
 				React.createElement(SideMenu, {
 					curPath: this.state.curPath, 
 					curActive: this.state.curActive, 
 					menuData: this.state.menuData}), 
-				React.createElement(Xcontent, {curRoute: this.state.route})
+				React.createElement(Xcontent, {curRoute: this.state.curActive})
 			)
 		);
 	},
