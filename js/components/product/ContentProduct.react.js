@@ -2,36 +2,34 @@
 var React = require('react');
 var ContentItem = require('./ContentItem.react');
 
+var ProductStore = require('../../stores/productStore');
+var ProductActionCreater = require('../../actions/ProductActionCreater');
+var ProductApis = require('../../utils/productApis');
+
+function getStateFromStores() {
+	return ProductStore.getProductData();
+}
+
 var ContentProduct = React.createClass({
 	getInitialState: function () {
-		return {
-			keyOrder: [],
-			headData: {},
-			itemData : []
-		};
+		return {};
 	},
 	componentDidMount: function () {
-		var _this = this;
-		$.ajax({
-			"url":"json/productData.json",
-			"type": "get",
-			"dataType": "json",
-			"success": function (data) {
-				_this.setState({
-					keyOrder: data.keyOrder,
-					headData: data.headData,
-					itemData: data.itemData
-				});
-			},
-			"error": function () {
-				console.log("get productData error.");
-			}
+		// 添加事件监听
+		ProductStore.addChangeListener(this._onChange);
+
+		// 获取接口返回数据
+		ProductApis.getProductData(function (productData) {			
+			ProductActionCreater.receiveProductData(productData);
 		});
 	},
+	componentWillUnmount: function() {
+		ProductStore.removeChangeListener(this._onChange);
+	},
 	render: function () {
-		var headData = this.state.headData;
-		var itemData = this.state.itemData;
-		var keyOrder = this.state.keyOrder;
+		var headData = this.state.headData || {};
+		var itemData = this.state.itemData || [];
+		var keyOrder = this.state.keyOrder || [];
 		var i, key, list = [];
 
 		for (i = 0; i < itemData.length; i++) {
@@ -50,6 +48,9 @@ var ContentProduct = React.createClass({
 				</div>
 			</div>
 		);
+	},
+	_onChange: function() {
+		this.setState(getStateFromStores());
 	}
 });
 module.exports = ContentProduct;

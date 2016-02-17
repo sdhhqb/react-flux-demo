@@ -2,36 +2,35 @@
 var React = require('react');
 var ContentItem = require('./ContentItem.react');
 
+var UserStore = require('../../stores/userStore');
+var UserActionCreater = require('../../actions/UserActionCreater');
+var UserApis = require('../../utils/userApis');
+
+function getStateFromStores() {
+	return UserStore.getAll();
+}
+
 var Content = React.createClass({
 	getInitialState: function () {
-		return {
-			keyOrder: [],
-			headData: {},
-			itemData : []
-		};
+		return {};
 	},
 	componentDidMount: function () {
-		var _this = this;
-		$.ajax({
-			"url":"json/userData.json",
-			"type": "get",
-			"dataType": "json",
-			"success": function (data) {
-				_this.setState({
-					keyOrder: data.keyOrder,
-					headData: data.headData,
-					itemData: data.itemData
-				});
-			},
-			"error": function () {
-				console.log("get userData error.");
-			}
+		// 添加事件监听
+		UserStore.addChangeListener(this._onChange);
+
+		// 获取接口返回数据
+		UserApis.getUserData(function (userData) {			
+			UserActionCreater.receiveUserData(userData);
 		});
 	},
+	componentWillUnmount: function() {
+		UserStore.removeChangeListener(this._onChange);
+	},
 	render: function () {
-		var headData = this.state.headData;
-		var itemData = this.state.itemData;
-		var keyOrder = this.state.keyOrder;
+		var headData = this.state.headData || {};
+		var itemData = this.state.itemData || [];
+		var keyOrder = this.state.keyOrder || [];
+		console.log(headData, itemData, keyOrder);
 		var i, key, list = [];
 
 		for (i = 0; i < itemData.length; i++) {
@@ -49,6 +48,9 @@ var Content = React.createClass({
 				</div>
 			</div>
 		);
+	},
+	_onChange: function() {
+		this.setState(getStateFromStores());
 	}
 });
 module.exports = Content;

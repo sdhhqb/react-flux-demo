@@ -16,7 +16,7 @@ var SideMenu = React.createClass({
 
 		var key, list = [];
 
-		console.log("sideMenu render, menuData: ", menuData)
+		console.log("sideMenu render, menuData: ", menuData);
 		console.log("curPath: "+curPath, "curActive: "+curActive);
 
 		for (var i = 0; i < menuData.length; i++) {

@@ -7,9 +7,9 @@ var Content = React.createClass({
 	render: function () {
 		var Xcontent;
 		switch (this.props.curRoute) {
-		case 'productlist': Xcontent = ContentProduct; break;
-		case 'productsale': Xcontent = ContentSale; break;
-		default: Xcontent = ContentProduct;
+			case 'productlist': Xcontent = ContentProduct; break;
+			case 'productsale': Xcontent = ContentSale; break;
+			default: Xcontent = ContentProduct;
 		}
 
 		return (

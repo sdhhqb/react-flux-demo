@@ -9,7 +9,7 @@ var MenuActionCreater = require('../actions/MenuActionCreater');
 var MainApis = require('../utils/MainApis');
 
 function getStateFromStores() {
-  return MenuStore.getAll();
+	return MenuStore.getAll();
 }
 
 var MainSection = React.createClass({
@@ -48,15 +48,15 @@ var MainSection = React.createClass({
 		});
 	},
 	componentWillUnmount: function() {
-    MenuStore.removeChangeListener(this._onChange);
-  },
+		MenuStore.removeChangeListener(this._onChange);
+	},
 	render: function () {
 		var Xcontent;
 		switch (this.state.curActive) {
-		case 'productlist': Xcontent = ContentProduct; break;
-		case 'productsale': Xcontent = ContentProduct; break;
-		case 'userlist': Xcontent = ContentUser; break;
-		default:			Xcontent = ContentProduct;
+			case 'productlist': Xcontent = ContentProduct; break;
+			case 'productsale': Xcontent = ContentProduct; break;
+			case 'userlist': Xcontent = ContentUser; break;
+			default:			Xcontent = ContentProduct;
 		}
 
 		return (
@@ -69,6 +69,7 @@ var MainSection = React.createClass({
 			</div>
 		);
 	},
+	// 获取菜单路径
 	getPath: function (menuData, curActive, startLevel, startStr) {
 		var key = startStr || "";
 		var level = startLevel || 1;
@@ -90,7 +91,7 @@ var MainSection = React.createClass({
 		return key;
 	},
 	_onChange: function() {
-    this.setState(getStateFromStores());
-  }
+		this.setState(getStateFromStores());
+	}
 });
 module.exports = MainSection;

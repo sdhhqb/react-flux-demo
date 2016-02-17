@@ -24,49 +24,49 @@ function setCurPath (curPath) {
 
 var MenuStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-  getAll: function () {
-  	return {
-  		menuData: _menuData,
-  		curActive: _curActive,
-  		curPath: _curPath
-  	};
-  }
+		this.emit(CHANGE_EVENT);
+	},
+	addChangeListener: function(callback) {
+		this.on(CHANGE_EVENT, callback);
+	},
+	removeChangeListener: function(callback) {
+		this.removeListener(CHANGE_EVENT, callback);
+	},
+	getAll: function () {
+		return {
+			menuData: _menuData,
+			curActive: _curActive,
+			curPath: _curPath
+		};
+	}
 });
 
 MenuStore.dispatchToken = AppDispatcher.register(function(action) {
-  console.log("menuStore dispatcher callback, action type: " + action.type);
+	console.log("menuStore dispatcher callback, action type: " + action.type);
 
-  switch(action.type) {
-  	
-  	case ActionTypes.RECEIVE_MENU_DATA:
-  		// 收到接口返回的菜单数据，设置菜单数据
-  		setMenuData(action.menuData);
-      MenuStore.emitChange();
-  		break;
+	switch(action.type) {
+		
+		case ActionTypes.RECEIVE_MENU_DATA:
+			// 收到接口返回的菜单数据，设置菜单数据
+			setMenuData(action.menuData);
+			MenuStore.emitChange();
+			break;
 
-    case ActionTypes.SET_MENU_PATH:
-    	// 点击菜单，设置当前点击路径
-    	setCurPath(action.curPath);
-      MenuStore.emitChange();
-      break;
+		case ActionTypes.SET_MENU_PATH:
+			// 点击菜单，设置当前点击路径
+			setCurPath(action.curPath);
+			MenuStore.emitChange();
+			break;
 
-    case ActionTypes.SET_MENU_ITEM:
-    	// 点击菜单内容项，设置当前点击路径和选中项
-    	setCurPath(action.curPath);
-      setCurActive(action.curActive);
-      MenuStore.emitChange();
-      break;
+		case ActionTypes.SET_MENU_ITEM:
+			// 点击菜单内容项，设置当前点击路径和选中项
+			setCurPath(action.curPath);
+			setCurActive(action.curActive);
+			MenuStore.emitChange();
+			break;
 
-    default:
-      // do nothing
-  }
+		default:
+			// do nothing
+	}
 });
 module.exports = MenuStore;
